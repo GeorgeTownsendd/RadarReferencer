@@ -85,14 +85,14 @@ def save_image_from_ftp(img_filename, raw_dir='images/radar/{}/raw/'):
     reference_image(img_filename, raw_dir='images/radar/{}/transparent/')
 
 
-def check_radar_attribute(radar_id, attribute):
+def get_radar_attribute(radar_id, attribute):
     radar_data = pd.read_csv('data/radars.csv')
     if radar_id in radar_data['radar_id'].values:
         return list(radar_data[radar_data['radar_id'] == radar_id][attribute])[0]
 
 
 def get_radar_coords(radar_id):
-    coordinates = (check_radar_attribute(radar_id, attribute='lat'), check_radar_attribute(radar_id, attribute='lon'))
+    coordinates = (get_radar_attribute(radar_id, attribute='lat'), get_radar_attribute(radar_id, attribute='lon'))
 
     return coordinates
 
@@ -110,7 +110,7 @@ def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir
     else:
         proj_str = '"+proj=gnom +lat_0={} +lon_0={}"'.format(center_coords[0], center_coords[1])
 
-        s = check_radar_attribute(radar_id, attribute='size')
+        s = get_radar_attribute(radar_id, attribute='size')
         corner_str = '-{} +{} {} -{}'.format(s, s, s, s)
 
         #print(corner_str)
