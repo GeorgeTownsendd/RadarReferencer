@@ -4,6 +4,7 @@ import shutil
 import re
 from datetime import datetime, timezone, timedelta
 
+import geopandas as gpd
 import pandas as pd
 from dateutil import tz
 from PIL import Image

@@ -1,61 +1,181 @@
-,Name,Location,Coordinates,Type,C-Band,S-Band,Doppler,Dual Pol,Rainfall Accumulations,Notes
-0,Brewarrina,Brewarrina,".mw-parser-output .geo-default,.mw-parser-output .geo-dms,.mw-parser-output .geo-dec{display:inline}.mw-parser-output .geo-nondefault,.mw-parser-output .geo-multi-punct{display:none}.mw-parser-output .longitude,.mw-parser-output .latitude{white-space:nowrap}29°58′S 146°49′E / 29.96°S 146.81°E",Meteor 735,Yes,—,Yes,Yes[14],Yes,
-1,Canberra (Captains Flat),Captains Flat,35°40′S 149°31′E / 35.66°S 149.51°E,WSR-74,—,Yes,Yes,No,Yes,
-2,Grafton,"NSW Agriculture Research Station, Grafton",29°37′S 152°58′E / 29.62°S 152.97°E,WSR-74,—,Yes,No,No,No,
-3,Hillston,Hillston,33°33′S 145°31′E / 33.55°S 145.52°E,Meteor 735,Yes,—,Yes,Yes[14],Yes,
-4,Moree,Moree Airport,29°30′S 149°51′E / 29.50°S 149.85°E,WF 100,Yes,—,No,No,No,
-5,Namoi (Blackjack Mountain),"Blackjack Mountain, near Gunnedah",31°01′26″S 150°11′29″E / 31.0240°S 150.1915°E,DWSR 8502,—,Yes,Yes,No,No,
-6,Newcastle,Lemon Tree Passage,32°43′48″S 152°01′37″E / 32.730°S 152.027°E,WSR-74,—,Yes,Yes,No,Yes,
-7,Norfolk Island,"Aerodrome, Norfolk Island",29°01′59″S 167°55′59″E / 29.033°S 167.933°E,WF 100,Yes,—,No,No,No,
-8,Sydney (Terrey Hills),18 km north of the Sydney CBD,33°42′04″S 151°12′36″E / 33.701°S 151.210°E,Meteor 1500,—,Yes,Yes,Yes[16],Yes,
-9,Wagga Wagga,Wagga Wagga Airport,35°10′S 147°28′E / 35.17°S 147.47°E,WF 100,Yes,—,No,No,No,
-10,Wollongong (Appin),"Appin Road, Bulli",34°15′50″S 150°52′26″E / 34.264°S 150.874°E,DWSR 8502,—,Yes,Yes,No,Yes,
-0,Alice Springs,Alice Springs Airport,23°49′S 133°54′E / 23.82°S 133.90°E,WF 100,Yes,—,No,No,No,
-1,Darwin (Berrimah),7 km southeast of Darwin Airport,12°28′S 130°56′E / 12.46°S 130.93°E,DWSR 2502,Yes,—,Yes,No,No,
-2,Gove,Gove Airport,12°17′S 136°49′E / 12.28°S 136.82°E,WF 100,Yes,—,No,No,No,
-3,Katherine (Tindal),RAAF Base Tindal,14°31′S 132°27′E / 14.51°S 132.45°E,WSR 81,Yes,—,No,No,No,
-4,Warruwi,Warruwi,11°38′58″S 133°22′48″E / 11.6494°S 133.38°E,DWSR 2502,Yes,—,Yes,No,No,
-0,Bowen,Abbot Point,19°53′S 148°05′E / 19.88°S 148.08°E,WF 100,Yes,—,No,No,No,
-1,Brisbane (Mt Stapylton),Mount Stapylton,27°43′05″S 153°14′24″E / 27.718°S 153.240°E,Meteor 1500,—,Yes,Yes,Yes[21],Yes,
-2,Cairns,Saddle Mountain,16°49′S 145°41′E / 16.82°S 145.68°E,DWSR 2502,Yes,—,No,No,No,
-3,Emerald,Emerald,23°32′58″S 148°14′21″E / 23.5494°S 148.2392°E,DWSR 8502,—,Yes,Yes,No,No,
-4,Gladstone,Gladstone,23°52′S 151°16′E / 23.86°S 151.26°E,WSR-74,—,Yes,No,No,No,
-5,Gympie (Mt Kanigan),Kanigan,25°57′25″S 152°34′37″E / 25.957°S 152.577°E,DWSR 8502,—,Yes,Yes,No,Yes,
-6,Longreach,Longreach Airport,23°26′S 144°17′E / 23.43°S 144.29°E,WF 100,Yes,—,No,No,No,
-7,Mackay,"Mount Bassett, Mackay Harbour",21°07′S 149°13′E / 21.12°S 149.22°E,TVDR 2500,Yes,—,No,No,No,
-8,Marburg,Marburg,27°37′S 152°32′E / 27.61°S 152.54°E,WSR-74,—,Yes,No,No,No,
-9,Mornington Island,Gununa,16°40′S 139°10′E / 16.67°S 139.17°E,WF 100,Yes,—,No,No,No,
-10,Mount Isa,Mount Isa,20°42′41″S 139°33′19″E / 20.7114°S 139.5553°E,DWSR 8502,—,Yes,Yes,No,Yes,
-11,Townsville (Hervey Range),Hervey Range,19°25′S 146°33′E / 19.42°S 146.55°E,DWSR 2502,Yes,—,Yes,No,No,
-12,Warrego,110 km east of Charleville,26°26′S 147°21′E / 26.44°S 147.35°E,TVDR 2500,Yes,—,No,No,No,
-13,Weipa,Weipa Airport,12°40′S 141°55′E / 12.67°S 141.92°E,Wurrung 2502,Yes,—,Yes,No,No,
-14,Willis Island,Willis Island,16°17′17″S 149°57′54″E / 16.288°S 149.965°E,DWSR 2502,Yes,—,No,No,No,
-0,Adelaide (Buckland Park),Buckland Park,34°37′01″S 138°28′08″E / 34.617°S 138.469°E,Meteor 1500,—,Yes,Yes,Yes[21],Yes,
-1,Adelaide (Sellicks Hill),Sellicks Hill,35°20′S 138°30′E / 35.33°S 138.50°E,WF 100,Yes,—,No,No,Yes,
-2,Ceduna,Ceduna Airport,32°08′S 133°42′E / 32.13°S 133.70°E,Wurrung 2502,Yes,—,Yes,No,Yes,
-3,Mt Gambier,Mount Gambier Airport,37°45′S 140°46′E / 37.75°S 140.77°E,WF 100,Yes,—,No,No,No,
-4,Woomera,Woomera Airport,31°10′S 136°48′E / 31.16°S 136.80°E,WF 100,Yes,—,No,No,No,
-0,Hobart (Mt Koonya),Mount Koonya,43°06′44″S 147°48′22″E / 43.1122°S 147.8061°E,DWSR 2502,Yes,—,Yes,No,Yes,
-1,Hobart Airport,Hobart Airport,42°50′S 147°31′E / 42.83°S 147.51°E,WF 100,Yes,—,No,No,No,
-2,N.W. Tasmania (West Takone),"Loones Hill, West Takone",41°10′52″S 145°34′44″E / 41.181°S 145.579°E,Wurrung 2502,Yes,—,Yes,No,Yes,
-0,Bairnsdale,9 km south-west of Bairnsdale,37°53′S 147°34′E / 37.89°S 147.56°E,Wurrung 2502,Yes,—,Yes,No,No,
-1,Melbourne,19 km west-south-west of the Melbourne CBD,37°52′S 144°46′E / 37.86°S 144.76°E,Meteor 1500,—,Yes,Yes,Yes[21],Yes,
-2,Mildura,Cullulleraine,34°17′S 141°35′E / 34.28°S 141.59°E,Meteor 735,Yes,—,Yes,Yes[28],Yes,
-3,Rainbow,Rainbow,35°59′S 142°01′E / 35.99°S 142.01°E,Meteor 735,Yes,—,Yes,Yes[28],Yes,
-4,Yarrawonga,Yarrawonga,36°02′S 146°02′E / 36.03°S 146.03°E,WSR 81,Yes,—,Yes,No,No,
-0,Albany,Albany Meteorological Office,34°56′S 117°48′E / 34.94°S 117.80°E,Meteor 735,Yes,—,Yes,Yes[31],Yes,
-1,Broome,Broome Meteorological Office,17°57′S 122°14′E / 17.95°S 122.23°E,DWSR 2502,Yes,—,Yes,No,Yes,
-2,Carnavon,Carnarvon Airport,24°53′S 113°40′E / 24.88°S 113.67°E,DWSR 2502,Yes,—,No,No,No,
-3,Dampier,"Queens Lookout, East Intercourse Island",20°39′S 116°41′E / 20.65°S 116.69°E,WRM 200,Yes,—,Yes,No,Yes,
-4,Esperance,Esperance Meteorological Office,33°50′S 121°53′E / 33.83°S 121.89°E,Meteor 735,Yes,—,Yes,Yes[31],Yes,
-5,Geraldton,Geraldton Meteorological Office,28°48′S 114°42′E / 28.80°S 114.70°E,Meteor 735,Yes,—,Yes,Yes[31],Yes,
-6,Giles,Giles Meteorological Office,25°02′S 128°18′E / 25.03°S 128.30°E,WF 100,Yes,—,No,No,No,
-7,Halls Creek,Halls Creek Meteorological Office,18°14′S 127°40′E / 18.23°S 127.66°E,WF 100,Yes,—,No,No,No,
-8,Kalgoorlie,Kalgoorlie-Boulder Airport,30°47′S 121°27′E / 30.79°S 121.45°E,Wurrung 2502,Yes,—,Yes,No,Yes,
-9,Learmonth,Cape Range National Park,22°06′S 114°00′E / 22.10°S 114.00°E,TVDR 2500,Yes,—,No,No,No,
-10,Newdegate,Lake Grace-Newdegate Road,33°05′49″S 119°00′32″E / 33.097°S 119.009°E,TVDR 2500,Yes,—,Yes,No,Yes,
-11,Perth (Serpentine),Serpentine Airfield,32°23′30″S 115°52′01″E / 32.391746°S 115.867036°E,TVDR 2500,Yes,—,Yes,being upgraded,Yes,being upgraded to add Dual Polarisation[32]
-12,Port Hedland,Port Hedland Airport,20°22′S 118°38′E / 20.37°S 118.63°E,TVDR 2500,Yes,—,No,No,No,
-13,South Doodlakine,South Doodlakine Fire Road,31°47′S 117°57′E / 31.78°S 117.95°E,Wurrung 2502,Yes,—,Yes,No,Yes,
-14,Watheroo,"Edawa Road, Watheroo",30°22′S 116°17′E / 30.36°S 116.29°E,Wurrung 2502,Yes,—,Yes,No,Yes,
-15,Wyndham,"Five Rivers Bastion, Wyndham",15°27′S 128°07′E / 15.45°S 128.12°E,WF 100,Yes,—,No,No,No,
+Name,radar_id,lat,lon
+Brewarrina,IDR000,-29.96,146.81
+Brewarrina,IDR000,-29.96,146.81
+Brewarrina,IDR000,-29.96,146.81
+Canberra (Captains Flat),IDR000,-35.66,149.51
+Canberra (Captains Flat),IDR000,-35.66,149.51
+Canberra (Captains Flat),IDR000,-35.66,149.51
+Grafton,IDR000,-29.62,152.97
+Grafton,IDR000,-29.62,152.97
+Grafton,IDR000,-29.62,152.97
+Hillston,IDR000,-33.55,145.52
+Hillston,IDR000,-33.55,145.52
+Hillston,IDR000,-33.55,145.52
+Moree,IDR000,-29.5,149.85
+Moree,IDR000,-29.5,149.85
+Moree,IDR000,-29.5,149.85
+Namoi (Blackjack Mountain),IDR000,-31.024,150.1915
+Namoi (Blackjack Mountain),IDR000,-31.024,150.1915
+Namoi (Blackjack Mountain),IDR000,-31.024,150.1915
+Newcastle,IDR042,-32.73,152.027
+Newcastle,IDR043,-32.73,152.027
+Newcastle,IDR044,-32.73,152.027
+Norfolk Island,IDR000,-29.033,167.933
+Norfolk Island,IDR000,-29.033,167.933
+Norfolk Island,IDR000,-29.033,167.933
+Sydney (Terrey Hills),IDR712,-33.701,151.21
+Sydney (Terrey Hills),IDR713,-33.701,151.21
+Sydney (Terrey Hills),IDR714,-33.701,151.21
+Wagga Wagga,IDR000,-35.17,147.47
+Wagga Wagga,IDR000,-35.17,147.47
+Wagga Wagga,IDR000,-35.17,147.47
+Wollongong (Appin),IDR000,-34.264,150.874
+Wollongong (Appin),IDR000,-34.264,150.874
+Wollongong (Appin),IDR000,-34.264,150.874
+Alice Springs,IDR000,-23.82,133.9
+Alice Springs,IDR000,-23.82,133.9
+Alice Springs,IDR000,-23.82,133.9
+Darwin (Berrimah),IDR000,-12.46,130.93
+Darwin (Berrimah),IDR000,-12.46,130.93
+Darwin (Berrimah),IDR000,-12.46,130.93
+Gove,IDR000,-12.28,136.82
+Gove,IDR000,-12.28,136.82
+Gove,IDR000,-12.28,136.82
+Katherine (Tindal),IDR000,-14.51,132.45
+Katherine (Tindal),IDR000,-14.51,132.45
+Katherine (Tindal),IDR000,-14.51,132.45
+Warruwi,IDR000,-11.6494,133.38
+Warruwi,IDR000,-11.6494,133.38
+Warruwi,IDR000,-11.6494,133.38
+Bowen,IDR000,-19.88,148.08
+Bowen,IDR000,-19.88,148.08
+Bowen,IDR000,-19.88,148.08
+Brisbane (Mt Stapylton),IDR000,-27.718,153.24
+Brisbane (Mt Stapylton),IDR000,-27.718,153.24
+Brisbane (Mt Stapylton),IDR000,-27.718,153.24
+Cairns,IDR000,-16.82,145.68
+Cairns,IDR000,-16.82,145.68
+Cairns,IDR000,-16.82,145.68
+Emerald,IDR000,-23.5494,148.2392
+Emerald,IDR000,-23.5494,148.2392
+Emerald,IDR000,-23.5494,148.2392
+Gladstone,IDR000,-23.86,151.26
+Gladstone,IDR000,-23.86,151.26
+Gladstone,IDR000,-23.86,151.26
+Gympie (Mt Kanigan),IDR000,-25.957,152.577
+Gympie (Mt Kanigan),IDR000,-25.957,152.577
+Gympie (Mt Kanigan),IDR000,-25.957,152.577
+Longreach,IDR000,-23.43,144.29
+Longreach,IDR000,-23.43,144.29
+Longreach,IDR000,-23.43,144.29
+Mackay,IDR000,-21.12,149.22
+Mackay,IDR000,-21.12,149.22
+Mackay,IDR000,-21.12,149.22
+Marburg,IDR000,-27.61,152.54
+Marburg,IDR000,-27.61,152.54
+Marburg,IDR000,-27.61,152.54
+Mornington Island,IDR000,-16.67,139.17
+Mornington Island,IDR000,-16.67,139.17
+Mornington Island,IDR000,-16.67,139.17
+Mount Isa,IDR000,-20.7114,139.5553
+Mount Isa,IDR000,-20.7114,139.5553
+Mount Isa,IDR000,-20.7114,139.5553
+Townsville (Hervey Range),IDR000,-19.42,146.55
+Townsville (Hervey Range),IDR000,-19.42,146.55
+Townsville (Hervey Range),IDR000,-19.42,146.55
+Warrego,IDR000,-26.44,147.35
+Warrego,IDR000,-26.44,147.35
+Warrego,IDR000,-26.44,147.35
+Weipa,IDR000,-12.67,141.92
+Weipa,IDR000,-12.67,141.92
+Weipa,IDR000,-12.67,141.92
+Willis Island,IDR000,-16.288,149.965
+Willis Island,IDR000,-16.288,149.965
+Willis Island,IDR000,-16.288,149.965
+Adelaide (Buckland Park),IDR000,-34.617,138.469
+Adelaide (Buckland Park),IDR000,-34.617,138.469
+Adelaide (Buckland Park),IDR000,-34.617,138.469
+Adelaide (Sellicks Hill),IDR000,-35.33,138.5
+Adelaide (Sellicks Hill),IDR000,-35.33,138.5
+Adelaide (Sellicks Hill),IDR000,-35.33,138.5
+Ceduna,IDR000,-32.13,133.7
+Ceduna,IDR000,-32.13,133.7
+Ceduna,IDR000,-32.13,133.7
+Mt Gambier,IDR000,-37.75,140.77
+Mt Gambier,IDR000,-37.75,140.77
+Mt Gambier,IDR000,-37.75,140.77
+Woomera,IDR000,-31.16,136.8
+Woomera,IDR000,-31.16,136.8
+Woomera,IDR000,-31.16,136.8
+Hobart (Mt Koonya),IDR000,-43.1122,147.8061
+Hobart (Mt Koonya),IDR000,-43.1122,147.8061
+Hobart (Mt Koonya),IDR000,-43.1122,147.8061
+Hobart Airport,IDR000,-42.83,147.51
+Hobart Airport,IDR000,-42.83,147.51
+Hobart Airport,IDR000,-42.83,147.51
+N.W. Tasmania (West Takone),IDR000,-41.181,145.579
+N.W. Tasmania (West Takone),IDR000,-41.181,145.579
+N.W. Tasmania (West Takone),IDR000,-41.181,145.579
+Bairnsdale,IDR000,-37.89,147.56
+Bairnsdale,IDR000,-37.89,147.56
+Bairnsdale,IDR000,-37.89,147.56
+Melbourne,IDR000,-37.86,144.76
+Melbourne,IDR000,-37.86,144.76
+Melbourne,IDR000,-37.86,144.76
+Mildura,IDR000,-34.28,141.59
+Mildura,IDR000,-34.28,141.59
+Mildura,IDR000,-34.28,141.59
+Rainbow,IDR000,-35.99,142.01
+Rainbow,IDR000,-35.99,142.01
+Rainbow,IDR000,-35.99,142.01
+Yarrawonga,IDR000,-36.03,146.03
+Yarrawonga,IDR000,-36.03,146.03
+Yarrawonga,IDR000,-36.03,146.03
+Albany,IDR000,-34.94,117.8
+Albany,IDR000,-34.94,117.8
+Albany,IDR000,-34.94,117.8
+Broome,IDR000,-17.95,122.23
+Broome,IDR000,-17.95,122.23
+Broome,IDR000,-17.95,122.23
+Carnavon,IDR000,-24.88,113.67
+Carnavon,IDR000,-24.88,113.67
+Carnavon,IDR000,-24.88,113.67
+Dampier,IDR000,-20.65,116.69
+Dampier,IDR000,-20.65,116.69
+Dampier,IDR000,-20.65,116.69
+Esperance,IDR000,-33.83,121.89
+Esperance,IDR000,-33.83,121.89
+Esperance,IDR000,-33.83,121.89
+Geraldton,IDR000,-28.8,114.7
+Geraldton,IDR000,-28.8,114.7
+Geraldton,IDR000,-28.8,114.7
+Giles,IDR000,-25.03,128.3
+Giles,IDR000,-25.03,128.3
+Giles,IDR000,-25.03,128.3
+Halls Creek,IDR000,-18.23,127.66
+Halls Creek,IDR000,-18.23,127.66
+Halls Creek,IDR000,-18.23,127.66
+Kalgoorlie,IDR000,-30.79,121.45
+Kalgoorlie,IDR000,-30.79,121.45
+Kalgoorlie,IDR000,-30.79,121.45
+Learmonth,IDR000,-22.1,114.0
+Learmonth,IDR000,-22.1,114.0
+Learmonth,IDR000,-22.1,114.0
+Newdegate,IDR000,-33.097,119.009
+Newdegate,IDR000,-33.097,119.009
+Newdegate,IDR000,-33.097,119.009
+Perth (Serpentine),IDR000,-32.391746,115.867036
+Perth (Serpentine),IDR000,-32.391746,115.867036
+Perth (Serpentine),IDR000,-32.391746,115.867036
+Port Hedland,IDR000,-20.37,118.63
+Port Hedland,IDR000,-20.37,118.63
+Port Hedland,IDR000,-20.37,118.63
+South Doodlakine,IDR000,-31.78,117.95
+South Doodlakine,IDR000,-31.78,117.95
+South Doodlakine,IDR000,-31.78,117.95
+Watheroo,IDR000,-30.36,116.29
+Watheroo,IDR000,-30.36,116.29
+Watheroo,IDR000,-30.36,116.29
+Wyndham,IDR000,-15.45,128.12
+Wyndham,IDR000,-15.45,128.12
+Wyndham,IDR000,-15.45,128.12
