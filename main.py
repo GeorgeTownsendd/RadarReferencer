@@ -87,45 +87,19 @@ def save_image_from_ftp(img_filename, raw_dir='images/radar/{}/raw/'):
 
 def check_radar_attribute(radar_id, attribute):
     radar_data = pd.read_csv('data/radars.csv')
-    if radar_id in radar_data['radar_id']:
-        return radar_data[radar_data['radar_id'] == radar_id][0][attribute]
+    if radar_id in radar_data['radar_id'].values:
+        return list(radar_data[radar_data['radar_id'] == radar_id][attribute])[0]
 
 
-def get_center_coords(radar_id):
-    data = {
-        'IDR044': (-32.7297981, 152.0254045),
-        'IDR043': (-32.7297981, 152.0254045),
-        'IDR042': (-32.7297981, 152.0254045),
-        'IDR712': (-33.701, 151.210),
-        'IDR713': (-33.701, 151.210),
-        'IDR714': (-33.701, 151.210),
-        'IDR032': (-34.264, 150.874),
-        'IDR033': (-34.264, 150.874),
-        'IDR034': (-34.264, 150.874)
-    }
+def get_radar_coords(radar_id):
+    coordinates = (check_radar_attribute(radar_id, attribute='lat'), check_radar_attribute(radar_id, attribute='lon'))
 
-    return data[radar_id]
-
-
-def get_radar_size(radar_id):
-    data = {
-        'IDR044': 64000,
-        'IDR043': 128000,
-        'IDR042': 256000,
-        'IDR712': 256000,
-        'IDR713': 128000,
-        'IDR714': 64000, #???
-        'IDR032': 256000,
-        'IDR033': 128000,
-        'IDR034': 64000
-    }
-
-    return data[radar_id]
+    return coordinates
 
 
 def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir='images/radar/{}/referenced/'):
     radar_id = img_filename.split('.')[0]
-    center_coords = get_center_coords(radar_id)
+    center_coords = get_radar_coords(radar_id)
 
     raw_dir = raw_dir.format(radar_id)
     referenced_dir = referenced_dir.format(radar_id)
@@ -136,7 +110,7 @@ def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir
     else:
         proj_str = '"+proj=gnom +lat_0={} +lon_0={}"'.format(center_coords[0], center_coords[1])
 
-        s = get_radar_size(radar_id)
+        s = check_radar_attribute(radar_id, attribute='size')
         corner_str = '-{} +{} {} -{}'.format(s, s, s, s)
 
         #print(corner_str)
@@ -184,6 +158,9 @@ def monitor_radars(radar_id_list):
 
 #latest = load_existing_images('IDR044')
 
-#radars = ['IDR032', 'IDR033', 'IDR044', 'IDR044', 'IDR043', 'IDR042', 'IDR712', 'IDR713', 'IDR714']
+radars = ['IDR032', 'IDR033', 'IDR044', 'IDR044', 'IDR043', 'IDR042', 'IDR712', 'IDR713', 'IDR714']
 
-#monitor_radars(radars)
+monitor_radars(radars)
+
+#latest = get_latest_images('IDR032')
+#save_image_from_ftp(latest[-1])
