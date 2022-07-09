@@ -6,6 +6,7 @@ from dateutil import tz
 from PIL import Image
 import time
 import numpy as np
+import shutil
 
 FTP_HOST = "ftp2.bom.gov.au"
 FTP_USER = "anonymous"
@@ -33,7 +34,7 @@ def get_latest_images(radar_id='all'):
         return [i for i in latest_images if radar_id in i]
 
 
-def remove_watermark(img_filename, raw_dir='images/radar/{}/raw/', transparent_dir='images/radar/{}/transparent/', log_indent=0):
+def remove_watermark(img_filename, raw_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/raw/', transparent_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/transparent/', log_indent=0):
     radar_id = img_filename.split('.')[0]
     raw_dir = raw_dir.format(radar_id)
     transparent_dir = transparent_dir.format(radar_id)
@@ -58,32 +59,32 @@ def remove_watermark(img_filename, raw_dir='images/radar/{}/raw/', transparent_d
         log_event('Watermark removal succeeded', log_indent=log_indent)
 
 
-def load_existing_images(radar_id='all', raw_dir='images/radar/{}/raw/'):
+def load_existing_images(radar_id='all', image_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/', type='raw'):
     if radar_id == 'all':
+        radar_ids = next(os.walk(image_dir[:-3]))[1]
+
+        image_dir = image_dir + type + '/'
         image_files = []
-        radar_dir = '/'.join('images/radar/{}/raw/'.split('/', 2)[:2])
-        r_ids = [os.path.join(radar_dir, o) for o in os.listdir(radar_dir) if os.path.isdir(os.path.join(radar_dir,o))]
-        #print('radars: {}'.format(','.join(r_ids)))
 
-        for r_id in os.listdir('images/radar/'):
-            image_files += os.listdir(raw_dir.format(r_id))
-
+        for r_id in radar_ids:
+            image_files += os.listdir(image_dir.format(r_id))
     else:
-        image_files = os.listdir(raw_dir.format(radar_id))
+        image_dir = image_dir.format(radar_id) + type + '/'
+        image_files = os.listdir(image_dir)#[image_dir + fn for fn in os.listdir(image_dir)]
 
-    images = [f for f in image_files if 'png' in f]
+    images = [f for f in image_files if np.array([f.endswith(x) for x in ('png', 'tif', 'tiff')]).any()]
 
     return images
 
 
-def save_image_from_ftp(img_filename, raw_dir='images/radar/{}/raw/', log_indent=0):
+def save_image_from_ftp(img_filename, raw_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/raw/', log_indent=0):
     radar_id = img_filename.split('.')[0]
     with open(raw_dir.format(radar_id) + img_filename, 'wb') as f:
         ftp.retrbinary('RETR ' + img_filename, f.write)
 
     log_event('Download succeeded: {}'.format(img_filename), log_indent=log_indent)
     remove_watermark(img_filename, raw_dir=raw_dir, log_indent=log_indent+1)
-    reference_image(img_filename, raw_dir='images/radar/{}/transparent/', log_indent=log_indent+1)
+    reference_image(img_filename, raw_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/transparent/', log_indent=log_indent+1)
 
 
 def get_radar_attribute(radar_id, attribute):
@@ -98,7 +99,7 @@ def get_radar_coords(radar_id):
     return coordinates
 
 
-def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir='images/radar/{}/referenced/', log_indent=0):
+def reference_image(img_filename, raw_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/raw/', referenced_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/referenced/', log_indent=0):
     radar_id = img_filename.split('.')[0]
     center_coords = get_radar_coords(radar_id)
 
@@ -120,7 +121,7 @@ def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir
         log_event('Reference succeeded: size={}'.format(radar_radius), log_indent=log_indent)
 
 
-def reference_unreferenced(radar_id, raw_dir='images/radar/{}/raw/', referenced_dir='images/radar/{}/referenced/'):
+def reference_unreferenced(radar_id, raw_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/raw/', referenced_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/referenced/'):
     for image in load_existing_images(radar_id, raw_dir):
         reference_image(image, raw_dir=raw_dir, referenced_dir=referenced_dir)
 
@@ -128,7 +129,8 @@ def reference_unreferenced(radar_id, raw_dir='images/radar/{}/raw/', referenced_
 def get_timestamp(img_filename, convert_to_timezone=tz.tzlocal()):
     if 'latest' in img_filename:
         return datetime.now(tz=convert_to_timezone) - timedelta(hours=1)
-    s = img_filename[img_filename.index('.T.')+3:-4]
+
+    s = img_filename[img_filename.index('.T.') + 3:img_filename.rfind('.')]
 
     return datetime.strptime(s, '%Y%m%d%H%M').replace(tzinfo=timezone.utc).astimezone(convert_to_timezone)
 
@@ -142,7 +144,7 @@ def monitor_radars(radar_id_list, log_indent=0):
 
             images_to_save = []
             for img_filename in current_images:
-                if img_filename not in existing_images:
+                if img_filename not in existing_images and 'tmp' not in img_filename:
                     images_to_save.append(img_filename)
 
             n_saved = len(images_to_save)
@@ -158,14 +160,39 @@ def monitor_radars(radar_id_list, log_indent=0):
         time.sleep(60 * 7)
 
 
-def find_temporally_similar_images(radar_ids, time_to_match=datetime.utcnow().replace(tzinfo=timezone.utc), referenced_dir='images/radar/{}/referenced/'):
+def find_temporally_similar_images(radar_ids, time_to_match=datetime.utcnow().replace(tzinfo=timezone.utc), referenced_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/radar/{}/referenced/', threshold_seconds=60*6, log_indent=0):
     image_file_list = []
     for r_id in radar_ids:
-        radar_images = load_existing_images(r_id)
-        radar_timestamps = [get_timestamp(referenced_dir.format(r_id) + f,convert_to_timezone=timezone.utc) for f in radar_images]
-        frame_timedeltas = [ts - time_to_match for ts in radar_timestamps]
-        if sorted(frame_timedeltas)[0] < 5:
-            pass
+        radar_images = load_existing_images(r_id, type='referenced')
+        print(radar_images)
+        radar_timestamps = [get_timestamp(referenced_dir.format(r_id) + f, convert_to_timezone=timezone.utc) for f in radar_images]
+        frame_timedeltas = [time_to_match - ts for ts in radar_timestamps]
+
+        zipped_data = zip(radar_images, radar_timestamps, frame_timedeltas)
+        zipped_data = sorted(zipped_data, key=lambda x: x[2])
+        radar_images, radar_timestamps, frame_timedeltas = zip(*zipped_data)
+
+        if abs(frame_timedeltas[0].seconds) < threshold_seconds:
+            log_event('Frame found for radar: {}'.format(r_id))
+            image_file_list.append(referenced_dir.format(r_id) + radar_images[0])
+        else:
+            log_event('Frame not found for radar: {}'.format(r_id))
+
+    return image_file_list
+
+
+def create_set(image_list, set_name='auto', sets_dir='/run/media/george/Fastdrive/ScriptData/radarreferencer/images/composite/'):
+    if set_name == 'auto':
+        set_name = image_list[0][image_list[0].index('.T.')+3:image_list[0].rfind('.')]
+    dest_dir = sets_dir + set_name
+    if os.path.exists(dest_dir):
+        print('Set already exists!')
+
+    else:
+        os.mkdir(dest_dir)
+        for image_filename in image_list:
+            shutil.copy(image_filename, dest_dir)
+
 
 
 
@@ -173,7 +200,7 @@ def find_temporally_similar_images(radar_ids, time_to_match=datetime.utcnow().re
 
 radars = ['IDR032', 'IDR033', 'IDR044', 'IDR044', 'IDR043', 'IDR042', 'IDR712', 'IDR713', 'IDR714']
 
-monitor_radars(radars)
+#monitor_radars(radars)
 
 #latest = get_latest_images('IDR032')
 #save_image_from_ftp(latest[-1])
