@@ -41,10 +41,13 @@ function updateSelectedMarkers() {
         document.getElementById('selectedMarkersHeading').style.display = 'block';
         document.getElementById('defaultText').style.display = 'none';
 
+        // Update the title with the number of selected markers
+        document.getElementById('selectedMarkersHeading').innerHTML = `Selected Markers (${selectedMarkersCount})`;
+
         for (var radar_id in selectedFeatures) {
             var feature = selectedFeatures[radar_id];
             var div = document.createElement('div');
-            div.textContent = feature.properties.Name;
+            div.textContent = feature.properties.Full_Name;
             container.appendChild(div);
         }
     } else {
@@ -53,10 +56,25 @@ function updateSelectedMarkers() {
     }
 }
 
+
 function loadGeoJSON(geojson_data) {
     L.geoJSON(geojson_data, {
         onEachFeature: function (feature, layer) {
             layer.on('click', onMarkerClick);
+
+            // Create an HTML string with all properties from the GeoJSON feature
+            let popupContent = '';
+            for (let key in feature.properties) {
+                popupContent += `<strong>${key}:</strong> ${feature.properties[key]}<br>`;
+            }
+
+            // Bind the popup with the generated content to the layer (marker)
+            layer.bindPopup(popupContent);
+
+            // Add a right-click (contextmenu) event listener to open the popup
+            layer.on('contextmenu', function (e) {
+                layer.openPopup();
+            });
         }
     }).addTo(map);
 }
