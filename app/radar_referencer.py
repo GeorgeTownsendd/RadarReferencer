@@ -2,6 +2,7 @@ import ftplib
 import os
 from datetime import datetime, timezone, timedelta
 import pandas as pd
+import geopandas as gpd
 from dateutil import tz
 from PIL import Image
 import time
@@ -22,22 +23,69 @@ def log_event(event_text, log_indent=0):
     print('[{}]{} {}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '\t' * log_indent, event_text))
 
 
-def get_latest_images(radar_id='all'):
+def generate_image_identifier(radar_id, image_type):
+    image_type_codes = {
+        '512km': '1',
+        '256km': '2',
+        '128km': '3',
+        '64km': '4',
+    }
+
+    if len(radar_id) == 2 and radar_id.isnumeric():
+        radar_id_str = radar_id
+    else:
+        if radar_id[:3] == 'IDR':
+            radar_id = radar_id[3:]
+        radar_id_str = str(radar_id).zfill(2)
+
+    return f"IDR{radar_id_str}{image_type_codes[image_type]}"
+
+
+def generate_imagery_combinations(radar_ids, imagery_types):
+    imagery_identifiers = []
+    for radar_id in radar_ids:
+        for imagery_type in imagery_types:
+            imagery_identifiers.append(generate_image_identifier(radar_id, imagery_type))
+
+    return imagery_identifiers
+
+
+def get_latest_image_list(radar_ids='all', imagery_types='rain', latest_n=1):
     global ftp
     ftp.cwd('/anon/gen/radar')
 
-    latest_images = [i for i in ftp.nlst() if 'png' in i]
+    if isinstance(radar_ids, list):
+        if (isinstance(radar_ids, str) and radar_ids[0] != 'IDR') or isinstance(radar_ids[0], int):
+            radar_ids = ['IDR' + str(r_id).zfill(2) for r_id in radar_ids]
 
-    if radar_id == 'all':
-        return latest_images
-    else:
-        return [i for i in latest_images if radar_id in i]
+    if imagery_types == 'rain':
+        imagery_types = ['1', '2', '3', '4']
+
+    current_imagery_index = [i for i in ftp.nlst() if 'png' in i]
+    allowed_imageryids = generate_imagery_combinations(radar_ids, imagery_types)
+    filtered_images = [image for image in current_imagery_index if (image[:6] in allowed_imageryids and image[-4:] == '.png')]
+
+    limited_images = []
+    for relevant_imageryid in allowed_imageryids:
+        relevant_images = []
+        for i in filtered_images:
+            if i[:6] == relevant_imageryid:
+                relevant_images.append(i)
+
+        sorted_by_time = sorted(relevant_images, key=lambda x: get_timestamp(x))
+        for x in sorted_by_time[:latest_n]:
+            limited_images.append(x)
+
+    return limited_images
 
 
 def remove_watermark(img_filename, raw_dir='images/radar/{}/raw/', transparent_dir='images/radar/{}/transparent/', log_indent=0):
     radar_id = img_filename.split('.')[0]
     raw_dir = raw_dir.format(radar_id)
     transparent_dir = transparent_dir.format(radar_id)
+
+    if not os.path.exists(transparent_dir):
+        os.makedirs(transparent_dir)
 
     if img_filename in os.listdir(transparent_dir):
         log_event('Watermark removal cancelled: already removed from this frame!', log_indent=log_indent)
@@ -79,7 +127,10 @@ def load_existing_images(radar_id='all', image_dir='images/radar/{}/', type='raw
 
 def save_image_from_ftp(img_filename, raw_dir='images/radar/{}/raw/', log_indent=0):
     radar_id = img_filename.split('.')[0]
-    with open(raw_dir.format(radar_id) + img_filename, 'wb') as f:
+    radar_path = raw_dir.format(radar_id)
+    if not os.path.exists(radar_path):
+        os.makedirs(radar_path)
+    with open(radar_path + img_filename, 'wb') as f:
         ftp.retrbinary('RETR ' + img_filename, f.write)
 
     log_event('Download succeeded: {}'.format(img_filename), log_indent=log_indent)
@@ -88,9 +139,11 @@ def save_image_from_ftp(img_filename, raw_dir='images/radar/{}/raw/', log_indent
 
 
 def get_radar_attribute(radar_id, attribute):
-    radar_data = pd.read_csv('data/radars.csv')
-    if radar_id in radar_data['radar_id'].values:
-        return list(radar_data[radar_data['radar_id'] == radar_id][attribute])[0]
+    geojson_data = gpd.read_file('app/static/radar_locations.geojson')
+    geojson_data['IDR_Name'] = ['IDR' + str(radar_id).zfill(2) for radar_id in geojson_data['Radar_id'].values]
+    print(radar_id, [str(x) for x in geojson_data['IDR_Name'].values])
+    if radar_id[:5] in geojson_data['IDR_Name'].values:
+        return list(geojson_data[geojson_data['IDR_Name'] == radar_id[:5]][attribute])[0]
 
 
 def get_radar_coords(radar_id):
@@ -107,12 +160,22 @@ def reference_image(img_filename, raw_dir='images/radar/{}/raw/', referenced_dir
     referenced_dir = referenced_dir.format(radar_id)
     new_filename = img_filename[:-4] + '.tiff'
 
+    if not os.path.exists(referenced_dir):
+        os.makedirs(referenced_dir)
+
     if new_filename in os.listdir(referenced_dir):
         log_event('Reference cancelled: frame already referenced!', log_indent=log_indent)
     else:
         proj_str = '"+proj=gnom +lat_0={} +lon_0={}"'.format(center_coords[0], center_coords[1])
 
-        radar_radius = get_radar_attribute(radar_id, attribute='size')
+        print(center_coords[0], center_coords[1])
+
+        radar_radius = {1:512000,
+                        2:256000,
+                        3:128000,
+                        4:64000,
+        }[int(radar_id[5])]
+
         corner_str = '-{} +{} {} -{}'.format(radar_radius, radar_radius, radar_radius, radar_radius)
 
         os.system('gdal_translate -a_srs {} -a_ullr {} {} tmp/intermediate.tiff > /dev/null'.format(proj_str, corner_str, raw_dir + img_filename))
@@ -130,7 +193,7 @@ def get_timestamp(img_filename, convert_to_timezone=tz.tzlocal()):
     if 'latest' in img_filename:
         return datetime.now(tz=convert_to_timezone) - timedelta(hours=1)
 
-    s = img_filename[img_filename.index('.T.') + 3:img_filename.rfind('.')]
+    s = img_filename[img_filename.index('.T.') + 3:img_filename.find('.png')]
 
     return datetime.strptime(s, '%Y%m%d%H%M').replace(tzinfo=timezone.utc).astimezone(convert_to_timezone)
 
@@ -139,7 +202,7 @@ def monitor_radars(radar_id_list, log_indent=0):
     while True:
         for r_id in radar_id_list:
             log_event('Checking for new images ({})'.format(r_id), log_indent=log_indent)
-            current_images = get_latest_images(radar_id=r_id)
+            current_images = get_latest_image_list(radar_id=r_id)
             existing_images = load_existing_images(radar_id=r_id)
 
             images_to_save = []
@@ -199,12 +262,12 @@ def load_set(set_name, sets_dir='/run/media/george/Fastdrive/ScriptData/radarref
 
 #latest = load_existing_images('IDR044')
 
-radars = ['IDR032']#, 'IDR033', 'IDR044', 'IDR044', 'IDR043', 'IDR042', 'IDR712', 'IDR713', 'IDR714']
+#radars = ['IDR032']#, 'IDR033', 'IDR044', 'IDR044', 'IDR043', 'IDR042', 'IDR712', 'IDR713', 'IDR714']
 
 #monitor_radars(radars)
 
-latest = get_latest_images('IDR032')
-save_image_from_ftp(latest[-1])
+#latest = get_latest_images('IDR032')
+#save_image_from_ftp(latest[-1])
 
 #x = load_set('202207130834')
 

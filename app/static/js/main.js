@@ -85,6 +85,7 @@ function exportSelection() {
     });
 }
 
+
 function resetSelection() {
 for (var radar_id in selectedFeatures) {
 var marker = selectedFeatures[radar_id].marker;

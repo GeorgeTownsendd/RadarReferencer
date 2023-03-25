@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, Blueprint
 import json
+import app.radar_referencer as rr
 
 bp = Blueprint('app', __name__)
 
@@ -20,4 +21,13 @@ def get_geojson():
 def export_selection():
     selected_features = request.json
     print(selected_features)
+
+    radar_ids = selected_features.keys()
+    imagery_types = ['128km']
+
+    images_to_download = rr.get_latest_image_list(radar_ids, imagery_types)
+
+    for image_filename in images_to_download:
+        rr.save_image_from_ftp(image_filename)
+
     return jsonify({"status": "success"})
