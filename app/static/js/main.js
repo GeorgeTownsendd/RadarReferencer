@@ -1,122 +1,142 @@
-var map = L.map('map').setView([-29.0, 134.0], 4);
-var greenIcon = new L.Icon({
-    iconUrl: 'static/img/marker-icon-2x-green.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+function addSquare(lat, lon, sizeInKm, map) {
+  const latDelta = sizeInKm / 111;
+  const lonDelta = sizeInKm / (111 * Math.cos((Math.PI / 180) * lat));
+  const latLngs = [
+    [lat + latDelta / 2, lon - lonDelta / 2],
+    [lat + latDelta / 2, lon + lonDelta / 2],
+    [lat - latDelta / 2, lon + lonDelta / 2],
+    [lat - latDelta / 2, lon - lonDelta / 2],
+    [lat + latDelta / 2, lon - lonDelta / 2]
+  ];
+  return L.polygon(latLngs, {color: 'black'}).addTo(map);
+}
 
+// Initialize map and fetch GeoJSON data
+let mymap = L.map('mapid').setView([-29.0, 134.0], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-var selectedFeatures = {};
-
-function onMarkerClick(e) {
-    var marker = e.target;
-    var feature = marker.feature;
-
-    if (marker.options.icon === greenIcon) {
-        marker.setIcon(L.Icon.Default.prototype);
-        delete selectedFeatures[feature.properties.Radar_id];
-    } else {
-    marker.setIcon(greenIcon);
-    selectedFeatures[feature.properties.Radar_id] = {
-        ...feature,
-        marker: marker,
-    };
-}
-
-    updateSelectedMarkers();
-}
-
-function updateSelectedMarkers() {
-    var container = document.getElementById('markersList');
-    container.innerHTML = '';
-    var selectedMarkersCount = Object.keys(selectedFeatures).length;
-
-    if (selectedMarkersCount > 0) {
-        document.getElementById('selectedMarkersHeading').style.display = 'block';
-        document.getElementById('defaultText').style.display = 'none';
-
-        // Update the title with the number of selected markers
-        document.getElementById('selectedMarkersHeading').innerHTML = `Selected Markers (${selectedMarkersCount})`;
-
-        for (var radar_id in selectedFeatures) {
-            var feature = selectedFeatures[radar_id];
-            var div = document.createElement('div');
-            div.textContent = feature.properties.Full_Name;
-            container.appendChild(div);
-        }
-    } else {
-        document.getElementById('selectedMarkersHeading').style.display = 'none';
-        document.getElementById('defaultText').style.display = 'block';
-    }
-}
+  attribution: '© OpenStreetMap contributors'
+}).addTo(mymap);
 
 
-function loadGeoJSON(geojson_data) {
-    L.geoJSON(geojson_data, {
-        onEachFeature: function (feature, layer) {
-            layer.on('click', onMarkerClick);
-
-            // Create an HTML string with all properties from the GeoJSON feature
-            let popupContent = '';
-            for (let key in feature.properties) {
-                popupContent += `<strong>${key}:</strong> ${feature.properties[key]}<br>`;
-            }
-
-            // Bind the popup with the generated content to the layer (marker)
-            layer.bindPopup(popupContent);
-
-            // Add a right-click (contextmenu) event listener to open the popup
-            layer.on('contextmenu', function (e) {
-                layer.openPopup();
-            });
-        }
-    }).addTo(map);
-}
-
-function exportSelection() {
-    var exportData = {};
-
-    for (var radar_id in selectedFeatures) {
-        exportData[radar_id] = {...selectedFeatures[radar_id]};
-        delete exportData[radar_id].marker;
-    }
-
-    $.ajax({
-        url: '/export_selection',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(exportData),
-        success: function (response) {
-            if (response.status !== 'success') {
-                console.error('Error exporting selection!');
-            }
-        },
-        error: function () {
-            console.error('Error exporting selection!');
-        }
-    });
-}
-
-
-function resetSelection() {
-for (var radar_id in selectedFeatures) {
-var marker = selectedFeatures[radar_id].marker;
-marker.setIcon(L.Icon.Default.prototype);
-}
-selectedFeatures = {};
-updateSelectedMarkers();
-}
-
-// Load GeoJSON data from server
-$.getJSON('/get_geojson', function (data) {
-loadGeoJSON(data);
+// Suppress context menu on the map
+mymap.on('contextmenu', function(e) {
+  e.originalEvent.preventDefault();
 });
 
-document.getElementById('exportButton').addEventListener('click', exportSelection);
-document.getElementById('resetButton').addEventListener('click', resetSelection);
+let selectedMarkers = new Set();
+let markerSVG = '';
+
+// Fetch marker SVG
+fetch('/static/svg/map-marker.svg')
+  .then(response => response.text())
+  .then(text => {
+    markerSVG = text;
+
+    // Fetch GeoJSON data
+    fetch("/get_geojson")
+      .then(response => response.json())
+      .then(data => {
+        data.features.forEach(feature => {
+          let lat = feature.properties.lat;
+          let lon = feature.properties.lon;
+
+          let radarIcon = L.divIcon({
+            className: 'leaflet-div-icon',
+            html: colorizeSVG(markerSVG, 'blue'),
+            iconSize: [25, 25]
+          });
+
+          let marker = L.marker([lat, lon], {icon: radarIcon}).addTo(mymap);
+          marker.feature = feature;  // Attach feature data to marker
+
+          let popupContent = '<div>';
+          for (const [key, value] of Object.entries(feature.properties)) {
+            popupContent += `<strong>${key}</strong>: ${value}<br>`;
+          }
+          popupContent += '</div>';
+
+          let popup = L.popup().setContent(popupContent);
+
+          // Marker click event
+          marker.on('click', function(e) {
+            const name = feature.properties.Name;
+            let square;
+            if (selectedMarkers.has(marker)) {
+              selectedMarkers.delete(marker);
+              document.getElementById(name).remove();
+              marker.setIcon(L.divIcon({
+                className: 'leaflet-div-icon',
+                html: colorizeSVG(markerSVG, 'blue'),
+                iconSize: [25, 25]
+              }));
+              marker._square.remove();
+            } else {
+              selectedMarkers.add(marker);
+              let listItem = document.createElement('li');
+              listItem.id = name;
+              listItem.innerText = name;
+              document.getElementById("marker-names").appendChild(listItem);
+              marker.setIcon(L.divIcon({
+                className: 'leaflet-div-icon',
+                html: colorizeSVG(markerSVG, 'green'),
+                iconSize: [25, 25]
+              }));
+              square = addSquare(lat, lon, 512, mymap);
+              marker._square = square;
+            }
+            e.originalEvent.preventDefault();
+          });
+
+
+          // Marker contextmenu event
+          marker.on('contextmenu', function(e) {
+            popup.setLatLng(e.latlng);
+            mymap.openPopup(popup);
+            e.originalEvent.preventDefault();
+          });
+        });
+      });
+  });
+
+function colorizeSVG(svgText, color) {
+  return svgText.replace('<svg ', `<svg fill="${color}" `);
+}
+
+// Delete Selection Button
+document.getElementById("delete-selection").addEventListener("click", function() {
+  selectedMarkers.forEach(marker => {
+    marker.setIcon(L.divIcon({
+      className: 'leaflet-div-icon',
+      html: colorizeSVG(markerSVG, 'blue'),
+      iconSize: [25, 25]
+    }));
+    document.getElementById(marker.feature.properties.Name).remove();
+    if (marker._square) {
+      marker._square.remove();
+    }
+  });
+  selectedMarkers.clear();
+});
+6
+
+// Export Selection Button
+document.getElementById("export-selection").addEventListener("click", function() {
+  let exportData = Array.from(selectedMarkers).map(marker => {
+    return marker.feature.properties;
+  });
+  fetch('/export_markers', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(exportData),
+  }).then(response => response.json())
+    .then(data => {
+      console.log('Export successful:', data);
+    })
+    .catch((error) => {
+      console.error('Export failed:', error);
+    });
+});
+
+
